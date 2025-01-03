@@ -7,6 +7,11 @@ plugins {
 group = 'demo.sdjang'
 version = '0.0.1-SNAPSHOT'
 
+//plain jar 생성 방지
+jar {
+	enabled = false
+}
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
