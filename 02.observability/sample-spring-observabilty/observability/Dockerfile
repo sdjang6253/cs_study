@@ -12,6 +12,9 @@ RUN ./gradlew clean build -x test
 # 2단계: 실행 이미지를 설정
 FROM openjdk:17-alpine
 
+# bash 설치 (알파인 이미지에 기본적으로 포함되어 있지 않으므로)
+RUN apk add --no-cache bash
+
 WORKDIR /app
 
 # 빌드된 JAR 파일을 빌드 이미지에서 복사
