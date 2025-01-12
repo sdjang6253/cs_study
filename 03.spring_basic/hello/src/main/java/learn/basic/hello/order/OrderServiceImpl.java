@@ -1,12 +1,12 @@
 package learn.basic.hello.order;
 
 import learn.basic.hello.discount.DiscountPolicy;
-import learn.basic.hello.discount.FixDiscountPolicy;
-import learn.basic.hello.discount.RateDiscountPolicy;
 import learn.basic.hello.member.Member;
 import learn.basic.hello.member.MemberRepository;
-import learn.basic.hello.member.MemoryMemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OrderServiceImpl implements OrderService{
 
     private MemberRepository memberRepository;
@@ -14,6 +14,7 @@ public class OrderServiceImpl implements OrderService{
     //private final DiscountPolicy discountPolicy = new RateDiscountPolicy();
     private DiscountPolicy discountPolicy;
 
+    @Autowired
     public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
         this.memberRepository = memberRepository;
         this.discountPolicy = discountPolicy;
