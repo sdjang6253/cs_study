@@ -1,0 +1,5 @@
+*.pdf
+.idea
+.idea/
+[sdjang_references]*
+[sdjang_references]*/
