@@ -1,4 +1,4 @@
-package lang.Object;
+package lang.object;
 
 public class Child extends Parent{
 
