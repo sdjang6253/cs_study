@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo 상세</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        
+        .todo-detail {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .todo-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .todo-title.completed {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+        
+        .todo-description {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #555;
+            white-space: pre-wrap;
+        }
+        
+        .todo-status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .status-done {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .actions {
+            border-top: 1px solid #dee2e6;
+            padding-top: 20px;
+        }
+        
+        .delete-form {
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Todo 상세</h1>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <span th:text="'작성자: ' + ${currentUser.nickname}" style="color: #666;"></span>
+            <a th:href="@{/todos}" class="btn btn-secondary">목록으로</a>
+        </div>
+    </div>
+
+    <div class="todo-detail">
+        <div class="todo-title" th:classappend="${todo.isDone} ? 'completed' : ''" th:text="${todo.title}"></div>
+        
+        <div class="todo-status" th:classappend="${todo.isDone} ? 'status-done' : 'status-pending'">
+            <span th:if="${todo.isDone}">✓ 완료됨</span>
+            <span th:unless="${todo.isDone}">⏳ 진행중</span>
+        </div>
+        
+        <div class="todo-description" th:if="${todo.description}" th:text="${todo.description}"></div>
+        <div th:unless="${todo.description}" style="color: #6c757d; font-style: italic;">설명이 없습니다.</div>
+        
+        <div class="actions">
+            <form th:action="@{/todos/{id}/toggle(id=${todo.id})}" method="post" style="display: inline;">
+                <button type="submit" class="btn" th:text="${todo.isDone} ? '미완료로 변경' : '완료로 변경'"></button>
+            </form>
+            
+            <a th:href="@{/todos/{id}/edit(id=${todo.id})}" class="btn btn-warning">수정</a>
+            
+            <form th:action="@{/todos/{id}/delete(id=${todo.id})}" method="post" class="delete-form"
+                  onsubmit="return confirm('정말로 이 Todo를 삭제하시겠습니까?');">
+                <button type="submit" class="btn btn-danger">삭제</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

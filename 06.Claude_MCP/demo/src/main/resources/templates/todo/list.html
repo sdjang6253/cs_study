@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo 목록</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-welcome {
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .logout-form {
+            margin: 0;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 5px;
+        }
+        
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+        
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        .btn-outline-danger {
+            background-color: transparent;
+            color: #dc3545;
+            border: 1px solid #dc3545;
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .todo-item {
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .todo-item.completed {
+            background-color: #f8f9fa;
+            opacity: 0.7;
+        }
+        
+        .todo-checkbox {
+            margin-right: 15px;
+        }
+        
+        .todo-content {
+            flex: 1;
+        }
+        
+        .todo-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .todo-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .todo-title a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .todo-title a:hover {
+            color: #007bff;
+        }
+        
+        .todo-title.completed {
+            text-decoration: line-through;
+        }
+        
+        .todo-description {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            margin: 40px 0;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .alert {
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+        .delete-form {
+            display: inline;
+        }
+        
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .delete-btn:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .stats {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 사용자 정보 바 -->
+    <div class="top-bar">
+        <div class="user-info">
+            <span class="user-welcome" th:text="'안녕하세요, ' + ${currentUser.nickname} + '님!'"></span>
+        </div>
+        <form th:action="@{/logout}" method="post" class="logout-form">
+            <button type="submit" class="btn btn-outline-danger">로그아웃</button>
+        </form>
+    </div>
+
+    <!-- 통계 정보 -->
+    <div class="stats">
+        <div class="stat-item">
+            <div class="stat-number" th:text="${todos.size()}">0</div>
+            <div class="stat-label">전체 할일</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" th:text="${#lists.size(#lists.toList(todos.?[isDone == false]))}">0</div>
+            <div class="stat-label">진행중</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" th:text="${#lists.size(#lists.toList(todos.?[isDone == true]))}">0</div>
+            <div class="stat-label">완료됨</div>
+        </div>
+    </div>
+
+    <div class="header">
+        <h1>내 할일 목록</h1>
+        <a href="/todos/create" class="btn">새 Todo 추가</a>
+    </div>
+
+    <!-- 성공/에러 메시지 표시 -->
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
+    <div th:if="${todos.empty}" class="empty-message">
+        아직 등록된 Todo가 없습니다.<br>
+        첫 번째 할일을 추가해보세요!
+    </div>
+
+    <div th:each="todo : ${todos}" class="todo-item" th:classappend="${todo.isDone} ? 'completed' : ''">
+        <!-- 체크박스 -->
+        <form th:action="@{/todos/{id}/toggle(id=${todo.id})}" method="post" style="margin: 0;">
+            <input type="checkbox" 
+                   class="todo-checkbox"
+                   th:checked="${todo.isDone}"
+                   onchange="this.form.submit()">
+        </form>
+        
+        <!-- Todo 내용 -->
+        <div class="todo-content">
+            <div class="todo-title" th:classappend="${todo.isDone} ? 'completed' : ''">
+                <a th:href="@{/todos/{id}(id=${todo.id})}" th:text="${todo.title}"></a>
+            </div>
+            <div class="todo-description" th:text="${todo.description}" th:if="${todo.description}"></div>
+        </div>
+        
+        <!-- 액션 버튼들 -->
+        <div class="todo-actions">
+            <a th:href="@{/todos/{id}/edit(id=${todo.id})}" class="btn btn-sm btn-warning">수정</a>
+            <form th:action="@{/todos/{id}/delete(id=${todo.id})}" method="post" class="delete-form"
+                  onsubmit="return confirm('정말로 이 Todo를 삭제하시겠습니까?');">
+                <button type="submit" class="delete-btn">삭제</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 성공 메시지가 있으면 3초 후 자동으로 숨김
+        setTimeout(function() {
+            const alert = document.querySelector('.alert');
+            if (alert) {
+                alert.style.display = 'none';
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
